@@ -255,7 +255,7 @@ helm install deer-flow deploy/helm/deer-flow \
 
 ```bash
 kubectl -n deer-flow get pods
-kubectl -n deer-flow port-forward svc/nginx 2026:2026
+kubectl -n deer-flow port-forward svc/nginx 2026:http
 curl http://localhost:2026/health          # gateway liveness via nginx
 curl http://localhost:2026/health/ready    # readiness: database, checkpointer, stream_bridge, provisioner
 ```
@@ -268,6 +268,8 @@ changes the status code: every gateway pod reaches the same `provisioner`
 Service, whichever replica answers.
 
 Hit the Ingress host (map it in `/etc/hosts` for local clusters) to load the UI.
+The Ingress and the port-forward command use the nginx Service port named
+`http`, so both work with a custom `nginx.service.port`.
 
 Provisioner sanity check (`/health` is unauthenticated; `/api/*` requires the
 `PROVISIONER_API_KEY` the chart generates into the app Secret, so a 401 from

@@ -73,6 +73,15 @@ def _secret_ref(container: dict, env_name: str) -> dict:
     return _env(container)[env_name]["valueFrom"]["secretKeyRef"]
 
 
+def test_ingress_routes_to_the_configured_nginx_service_port() -> None:
+    documents = _render_chart("ingress.enabled=true", "nginx.service.port=8080")
+    service = _by_kind(documents, "Service", "nginx")
+    ingress = _by_kind(documents, "Ingress", "deer-flow")
+    port = next(port for port in service["spec"]["ports"] if port["port"] == 8080)
+    backend = ingress["spec"]["rules"][0]["http"]["paths"][0]["backend"]["service"]
+    assert backend == {"name": service["metadata"]["name"], "port": {"name": port["name"]}}
+
+
 # --- test_helm_credentials_key ---
 
 _FERNET_KEY = re.compile(r"[A-Za-z0-9_-]{43}=")

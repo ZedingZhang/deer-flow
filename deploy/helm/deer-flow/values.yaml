@@ -382,7 +382,7 @@ existingSecret: ""
 #    refuses to start without it.
 existingAppSecret: ""
 
-# -- Ingress in front of nginx (port 2026). nginx preserves all internal routing.
+# -- Ingress in front of the nginx Service's http port. nginx preserves all internal routing.
 ingress:
   enabled: true
   className: "nginx"
